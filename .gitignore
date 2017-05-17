@@ -1,3 +1,6 @@
+# Ignore google play services secret file
+google-services.json
+
 # Built application files
 *.apk
 *.ap_
