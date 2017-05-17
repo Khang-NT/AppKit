@@ -12,8 +12,7 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 before_install:
-  - openssl aes-256-cbc -K $encrypted_db0287693849_key -iv $encrypted_db0287693849_iv \
-    -in google-services.json.enc -out app/google-services.json -d
+  - openssl aes-256-cbc -K $encrypted_db0287693849_key -iv $encrypted_db0287693849_iv -in google-services.json.enc -out app/google-services.json -d
 
 script:
   ./gradlew clean build
