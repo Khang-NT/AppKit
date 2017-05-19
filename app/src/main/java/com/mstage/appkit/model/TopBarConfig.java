@@ -1,0 +1,118 @@
+package com.mstage.appkit.model;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.mstage.appkit.util.DataSnapshotWrapper;
+
+/**
+ * Created by Khang NT on 5/4/17.
+ * Email: khang.neon.1997@gmail.com
+ */
+
+public class TopBarConfig implements Parcelable {
+    private Background background;
+    private Font font;
+    private String contentAlign;
+    private String defaultTitle;
+    private String defaultLogo;
+
+    protected TopBarConfig(Parcel in) {
+        background = in.readParcelable(Background.class.getClassLoader());
+        font = in.readParcelable(Font.class.getClassLoader());
+        contentAlign = in.readString();
+        defaultTitle = in.readString();
+        defaultLogo = in.readString();
+    }
+
+    public static final Creator<TopBarConfig> CREATOR = new Creator<TopBarConfig>() {
+        @Override
+        public TopBarConfig createFromParcel(Parcel in) {
+            return new TopBarConfig(in);
+        }
+
+        @Override
+        public TopBarConfig[] newArray(int size) {
+            return new TopBarConfig[size];
+        }
+    };
+
+    public static TopBarConfig from(DataSnapshotWrapper dataSnapshot) {
+        if (!dataSnapshot.hasChildren()) return null;
+        return new TopBarConfig(Background.from(dataSnapshot.child("background")),
+                Font.from(dataSnapshot.child("font")),
+                dataSnapshot.get("content_align", String.class),
+                dataSnapshot.get("default_title", String.class),
+                dataSnapshot.get("default_logo", String.class));
+    }
+
+    public TopBarConfig(Background background, Font font, String contentAlign, String defaultTitle, String defaultLogo) {
+        this.background = background;
+        this.font = font;
+        this.contentAlign = contentAlign;
+        this.defaultTitle = defaultTitle;
+        this.defaultLogo = defaultLogo;
+    }
+
+    public Background getBackground() {
+        return background;
+    }
+
+    public Font getFont() {
+        return font;
+    }
+
+    public String getContentAlign() {
+        return contentAlign;
+    }
+
+    public String getDefaultTitle() {
+        return defaultTitle;
+    }
+
+    public String getDefaultLogo() {
+        return defaultLogo;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(background, flags);
+        dest.writeParcelable(font, flags);
+        dest.writeString(contentAlign);
+        dest.writeString(defaultTitle);
+        dest.writeString(defaultLogo);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TopBarConfig that = (TopBarConfig) o;
+
+        if (background != null ? !background.equals(that.background) : that.background != null)
+            return false;
+        if (font != null ? !font.equals(that.font) : that.font != null) return false;
+        if (contentAlign != null ? !contentAlign.equals(that.contentAlign) : that.contentAlign != null)
+            return false;
+        if (defaultTitle != null ? !defaultTitle.equals(that.defaultTitle) : that.defaultTitle != null)
+            return false;
+        return defaultLogo != null ? defaultLogo.equals(that.defaultLogo) : that.defaultLogo == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = background != null ? background.hashCode() : 0;
+        result = 31 * result + (font != null ? font.hashCode() : 0);
+        result = 31 * result + (contentAlign != null ? contentAlign.hashCode() : 0);
+        result = 31 * result + (defaultTitle != null ? defaultTitle.hashCode() : 0);
+        result = 31 * result + (defaultLogo != null ? defaultLogo.hashCode() : 0);
+        return result;
+    }
+}

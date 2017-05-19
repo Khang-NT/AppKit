@@ -1,11 +1,26 @@
 <resources>
+    <attr name="textColorPrimary" format="color" />
+    <attr name="textColorSecondary" format="color" />
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="popupMenuStyle">@style/PopupMenu</item>
+        <item name="colorPrimaryDark">@color/primary_dark_red</item>
+        <item name="colorPrimary">@color/primary_red</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="textColorPrimary">@color/primary_text</item>
+        <item name="textColorSecondary">@color/secondary_text</item>
     </style>
 
+    <style name="PopupMenu" parent="@style/Widget.AppCompat.Light.PopupMenu">
+        <item name="overlapAnchor">true</item>
+    </style>
+
+    <color name="background">#EEEEEE</color>
+    <color name="primary_red">#C62828</color>
+    <color name="primary_dark_red">#B71C1C</color>
+    <color name="accent">#FDCC01</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="divider">#595959</color>
 </resources>

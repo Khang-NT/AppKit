@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="flashScreenConfig"
+            type="com.mstage.appkit.model.FlashScreenConfig"/>
+
+        <variable
+            name="loading"
+            type="Boolean"/>
+
+        <variable
+            name="error"
+            type="Boolean"/>
+
+        <variable
+            name="onRetryClick"
+            type="View.OnClickListener"/>
+
+        <import type="android.view.View"/>
+    </data>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:bindBackground="@{flashScreenConfig.background}">
+
+        <!--<View-->
+            <!--android:id="@+id/fake_status_bar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="25dp"-->
+            <!--android:fitsSystemWindows="false"-->
+            <!--app:bindStatusBar="@{flashScreenConfig.statusBarConfig}"/>-->
+
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true"
+            android:minHeight="100dp"
+            app:bindImage="@{flashScreenConfig.logo}"
+            tools:src="#323232"/>
+
+        <ProgressBar
+            android:id="@+id/progressWheel"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:visibility="@{(flashScreenConfig == null &amp;&amp; !error) ? View.VISIBLE : View.GONE}"
+            />
+
+        <TextView
+            android:id="@+id/tvErrorMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bRetry"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:text="Sorry something went wrong, please check your network connection. Click 'Retry' to try again."
+            android:visibility="@{(error ?? false) ? View.VISIBLE : View.INVISIBLE}"/>
+
+        <Button
+            android:id="@+id/bRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="50dp"
+            android:onClick="@{onRetryClick}"
+            android:text="Retry"
+            android:visibility="@{(error ?? false) ? View.VISIBLE : View.INVISIBLE}"/>
+    </RelativeLayout>
+</layout>
