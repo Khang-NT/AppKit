@@ -12,7 +12,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.mstage.appkit.AppKitApplication;
 import com.mstage.appkit.R;
@@ -21,8 +24,10 @@ import com.mstage.appkit.databinding.ActivityMainScreenBinding;
 import com.mstage.appkit.fragment.PageFragment;
 import com.mstage.appkit.model.MainScreenConfig;
 import com.mstage.appkit.model.PageConfig;
+import com.mstage.appkit.util.BindingAdapters;
 import com.mstage.appkit.util.Preconditions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -46,6 +51,8 @@ public class MainScreen extends BaseActivity {
     private PagerAdapter mPagerAdapter;
     private List<PageConfig> pagesConfig;
     private Disposable mPagesConnectionDisposable;
+    private boolean navigationViewInvalidate = true;
+    private MainScreenConfig mainScreenConfig;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,13 +61,15 @@ public class MainScreen extends BaseActivity {
         AppKitApplication.getAppKitInjector(this).inject(this);
 
 
-        MainScreenConfig mainScreenConfig = getIntent().getParcelableExtra(EXTRA_CONFIG_DATA);
-        if (mainScreenConfig == null)
+        if (getIntent().hasExtra(EXTRA_CONFIG_DATA))
+            mainScreenConfig = getIntent().getParcelableExtra(EXTRA_CONFIG_DATA);
+        else
             mainScreenConfig = mConfigurationStore.getMainScreenConfig().blockingFirst();
         Preconditions.checkNotNull(mainScreenConfig);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main_screen);
         mBinding.setConfig(mainScreenConfig);
+        mBinding.notifyChange();
 
         setStatusBarConfig(mainScreenConfig.getStatusBarConfig());
 
@@ -103,6 +112,7 @@ public class MainScreen extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pageConfigs -> {
                     this.pagesConfig = pageConfigs;
+                    this.initNavigationMenu();
                     this.mPagerAdapter.notifyDataSetChanged();
                     if (pageConfigs.size() > 0) {
                         this.mBinding.libraryPager.setCurrentItem(0);
@@ -117,7 +127,27 @@ public class MainScreen extends BaseActivity {
                 });
     }
 
+    void initNavigationMenu() {
+        Preconditions.checkNotNull(pagesConfig);
+        Menu menu = mBinding.navView.getMenu();
+        menu.clear();
+        for (int i = 0; i < pagesConfig.size(); i++) {
+            menu.add(0, i, i, pagesConfig.get(i).getTitle());
+        }
 
+        mBinding.navView.post(() -> {
+            final ArrayList<View> itemLabels = new ArrayList<>();
+            Menu menu1 = mBinding.navView.getMenu();
+            for (int i = 0; i < menu1.size(); i++) {
+                MenuItem item = menu1.getItem(i);
+                mBinding.navView.findViewsWithText(itemLabels, item.getTitle(), View.FIND_VIEWS_WITH_TEXT);
+            }
+            for (View itemLabel : itemLabels) {
+                TextView tv = ((TextView) itemLabel);
+                BindingAdapters.bindFont(tv, mainScreenConfig.getNavigationViewConfig().getFontConfig());
+            }
+        });
+    }
 
     @Override
     protected void onDestroy() {

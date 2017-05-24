@@ -2,6 +2,7 @@
 <layout>
 
     <data>
+
         <variable
             name="config"
             type="com.mstage.appkit.model.MainScreenConfig"/>
@@ -95,8 +96,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="#464646"
+            app:bindBackground="@{config.navigationViewConfig.background}"
             app:headerLayout="@layout/nav_header"
+            app:itemTextColor="@android:color/white"
             tools:visibility="gone"/>
 
     </android.support.v4.widget.DrawerLayout>
