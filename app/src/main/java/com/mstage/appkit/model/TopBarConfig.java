@@ -1,9 +1,13 @@
 package com.mstage.appkit.model;
 
+import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.mstage.appkit.util.DataSnapshotWrapper;
+
+import timber.log.Timber;
 
 /**
  * Created by Khang NT on 5/4/17.
@@ -16,6 +20,7 @@ public class TopBarConfig implements Parcelable {
     private String contentAlign;
     private String defaultTitle;
     private String defaultLogo;
+    private String iconColor;
 
     protected TopBarConfig(Parcel in) {
         background = in.readParcelable(Background.class.getClassLoader());
@@ -23,6 +28,7 @@ public class TopBarConfig implements Parcelable {
         contentAlign = in.readString();
         defaultTitle = in.readString();
         defaultLogo = in.readString();
+        iconColor = in.readString();
     }
 
     public static final Creator<TopBarConfig> CREATOR = new Creator<TopBarConfig>() {
@@ -43,15 +49,18 @@ public class TopBarConfig implements Parcelable {
                 Font.from(dataSnapshot.child("font")),
                 dataSnapshot.get("content_align", String.class),
                 dataSnapshot.get("default_title", String.class),
-                dataSnapshot.get("default_logo", String.class));
+                dataSnapshot.get("default_logo", String.class),
+                dataSnapshot.get("icon_color", String.class));
     }
 
-    public TopBarConfig(Background background, Font font, String contentAlign, String defaultTitle, String defaultLogo) {
+    public TopBarConfig(Background background, Font font, String contentAlign, String defaultTitle,
+                        String defaultLogo, String iconColor) {
         this.background = background;
         this.font = font;
         this.contentAlign = contentAlign;
         this.defaultTitle = defaultTitle;
         this.defaultLogo = defaultLogo;
+        this.iconColor = iconColor;
     }
 
     public Background getBackground() {
@@ -74,6 +83,17 @@ public class TopBarConfig implements Parcelable {
         return defaultLogo;
     }
 
+    public int getIconColor(int defaultColor) {
+        if (!TextUtils.isEmpty(iconColor)) {
+            try {
+                return Color.parseColor(iconColor);
+            } catch (Throwable ex) {
+                Timber.d(ex, "Can't parse icon color: %s, return default color: " + defaultColor);
+            }
+        }
+        return defaultColor;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -86,6 +106,7 @@ public class TopBarConfig implements Parcelable {
         dest.writeString(contentAlign);
         dest.writeString(defaultTitle);
         dest.writeString(defaultLogo);
+        dest.writeString(iconColor);
     }
 
     @Override

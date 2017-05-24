@@ -1,15 +1,17 @@
 package com.mstage.appkit.activity;
 
-import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.View;
 
 import com.mstage.appkit.AppKitApplication;
@@ -41,7 +43,6 @@ public class MainScreen extends BaseActivity {
     ConfigurationStore mConfigurationStore;
 
     private ActivityMainScreenBinding mBinding;
-    private ActionBarDrawerToggle mDrawerToggle;
     private PagerAdapter mPagerAdapter;
     private List<PageConfig> pagesConfig;
     private Disposable mPagesConnectionDisposable;
@@ -67,6 +68,12 @@ public class MainScreen extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("");
 
+        // note: have to manual set toolbar icons tint color
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_black_24dp, getTheme());
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable.mutate(), mainScreenConfig.getTopBarConfig().getIconColor(Color.WHITE));
+        mBinding.toolbar.setNavigationIcon(drawable);
+
         mConfigurationStore
                 .getMainScreenConfig()
                 .skip(1)
@@ -77,10 +84,7 @@ public class MainScreen extends BaseActivity {
                     recreate();
                 }, Throwable::printStackTrace);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this,
-                mBinding.drawerLayout, mBinding.toolbar, 0, 0);
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
-        mBinding.drawerLayout.addDrawerListener(mDrawerToggle);
+
 
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mBinding.libraryPager.setAdapter(mPagerAdapter);
@@ -88,19 +92,7 @@ public class MainScreen extends BaseActivity {
 
         loadPages();
 
-        // todo: init navigation view
-    }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     void loadPages() {
