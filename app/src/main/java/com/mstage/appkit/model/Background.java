@@ -20,7 +20,7 @@ public class Background implements Parcelable {
     private String type;
     private String value;
 
-    protected Background(Parcel in) {
+    private Background(Parcel in) {
         type = in.readString();
         value = in.readString();
     }

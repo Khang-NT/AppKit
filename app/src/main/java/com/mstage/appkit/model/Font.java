@@ -5,8 +5,28 @@ import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
+import com.mstage.appkit.AppKitApplication;
 import com.mstage.appkit.util.DataSnapshotWrapper;
+import com.mstage.appkit.util.Preconditions;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
+import io.reactivex.functions.Consumer;
+import okhttp3.CacheControl;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import timber.log.Timber;
 
 /**
  * Created by Khang NT on 5/4/17.
@@ -15,11 +35,16 @@ import com.mstage.appkit.util.DataSnapshotWrapper;
 
 public class Font implements Parcelable {
     private String fontFamily;
+    private String fontUrl;
     private String fontSize;
     private String fontColor;
 
+    @Inject
+    OkHttpClient mOkHttpClient;
+
     protected Font(Parcel in) {
         fontFamily = in.readString();
+        fontUrl = in.readString();
         fontSize = in.readString();
         fontColor = in.readString();
     }
@@ -39,20 +64,26 @@ public class Font implements Parcelable {
     public static Font from(DataSnapshotWrapper dataSnapshot) {
         if (dataSnapshot.hasChildren()) {
             return new Font(dataSnapshot.get("font_family", String.class),
+                    dataSnapshot.get("font_url", String.class),
                     dataSnapshot.get("font_size", String.class),
                     dataSnapshot.get("font_color", String.class));
         }
         return null;
     }
 
-    public Font(String fontFamily, String fontSize, String fontColor) {
+    public Font(String fontFamily, String fontUrl, String fontSize, String fontColor) {
         this.fontFamily = fontFamily;
+        this.fontUrl = fontUrl;
         this.fontSize = fontSize;
         this.fontColor = fontColor;
     }
 
     public String getFontFamily() {
         return fontFamily;
+    }
+
+    public String getFontUrl() {
+        return fontUrl;
     }
 
     public String getFontSize() {
@@ -69,6 +100,45 @@ public class Font implements Parcelable {
         return Typeface.createFromAsset(am, "font/" + getFontFamily() + ".ttf");
     }
 
+    public void getTypeFaceOnline(Context context, Consumer<Typeface> onSuccess) {
+        AppKitApplication.getAppKitInjector(context).inject(this);
+        String url = Preconditions.checkNotNull(getFontUrl());
+        File fontFile = new File(context.getCacheDir(), "font" + url.hashCode());
+        if (fontFile.exists()) {
+            try {
+                onSuccess.accept(Typeface.createFromFile(fontFile));
+            } catch (Exception e) {
+                Timber.e(e, "Apply font failed");
+            }
+        } else {
+            Request request = new Request.Builder()
+                    .url(url)
+                    .cacheControl(new CacheControl.Builder().maxAge(24, TimeUnit.HOURS).build())
+                    .build();
+            mOkHttpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, IOException e) {
+                    Timber.e(e, "Download font failed");
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    try {
+                        OutputStream os = new FileOutputStream(fontFile);
+                        os.write(response.body().bytes());
+                        os.flush();
+                        os.close();
+                        onSuccess.accept(Typeface.createFromFile(fontFile));
+                    } catch (Exception e) {
+                        Timber.e(e, "Apply font failed");
+                    } finally {
+                        response.close();
+                    }
+                }
+            });
+        }
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -77,6 +147,7 @@ public class Font implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(fontFamily);
+        dest.writeString(fontUrl);
         dest.writeString(fontSize);
         dest.writeString(fontColor);
     }

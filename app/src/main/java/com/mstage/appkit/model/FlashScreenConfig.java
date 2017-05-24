@@ -3,9 +3,9 @@ package com.mstage.appkit.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.GenericTypeIndicator;
 import com.mstage.appkit.util.DataSnapshotWrapper;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,10 +39,11 @@ public class FlashScreenConfig implements Parcelable {
     };
 
     public static FlashScreenConfig from(DataSnapshotWrapper dataSnapshot) {
+        GenericTypeIndicator<List<String>> genericTypeIndicator = new GenericTypeIndicator<List<String>>() {};
         return new FlashScreenConfig(StatusBarConfig.from(dataSnapshot.child("status_bar")),
                 Background.from(dataSnapshot.child("background")),
                 dataSnapshot.get("logo", String.class),
-                Arrays.asList(dataSnapshot.get("pre_load_images", String[].class, new String[0])));
+                dataSnapshot.get("pre_load_image", genericTypeIndicator));
     }
 
     public FlashScreenConfig(StatusBarConfig statusBarConfig, Background background,

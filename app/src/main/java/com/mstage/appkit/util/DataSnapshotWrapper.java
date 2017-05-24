@@ -3,6 +3,7 @@ package com.mstage.appkit.util;
 import android.support.annotation.Nullable;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.Iterator;
 
@@ -53,5 +54,9 @@ public class DataSnapshotWrapper {
         T value = dataSnapshot.child(key).getValue(tClass);
         if (value == null) return defaultValue;
         return value;
+    }
+
+    public <T> T get(String key, GenericTypeIndicator<T> genericType) {
+        return dataSnapshot.child(key).getValue(genericType);
     }
 }

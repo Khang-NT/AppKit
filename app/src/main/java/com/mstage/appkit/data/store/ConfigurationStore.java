@@ -2,6 +2,9 @@ package com.mstage.appkit.data.store;
 
 import com.mstage.appkit.model.FlashScreenConfig;
 import com.mstage.appkit.model.MainScreenConfig;
+import com.mstage.appkit.model.PageConfig;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 
@@ -13,4 +16,6 @@ import io.reactivex.Observable;
 public interface ConfigurationStore {
     Observable<FlashScreenConfig> getFlashScreenConfig();
     Observable<MainScreenConfig> getMainScreenConfig();
+
+    Observable<List<PageConfig>> getPagesConfig();
 }
