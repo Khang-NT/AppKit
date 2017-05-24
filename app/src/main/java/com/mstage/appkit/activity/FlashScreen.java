@@ -9,11 +9,16 @@ import com.mstage.appkit.AppKitApplication;
 import com.mstage.appkit.R;
 import com.mstage.appkit.data.store.ConfigurationStore;
 import com.mstage.appkit.databinding.ActivityFlashScreenBinding;
+import com.mstage.appkit.model.FlashScreenConfig;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -57,7 +62,7 @@ public class FlashScreen extends BaseActivity {
                         setStatusBarConfig(flashScreenConfig.getStatusBarConfig());
                         mBinding.setError(false);
 
-                        loadMainScreen();
+                        preloadData(flashScreenConfig);
                     }, throwable -> {
                         mBinding.setError(true);
                         throwable.printStackTrace();
@@ -83,5 +88,32 @@ public class FlashScreen extends BaseActivity {
                     mBinding.setError(true);
                     throwable.printStackTrace();
                 });
+    }
+
+    void preloadData(FlashScreenConfig flashScreenConfig) {
+        Completable.concat(Flowable.fromIterable(flashScreenConfig.getPreloadImages()).map(this::fetchImageIgnoreError))
+                .compose(bindToLifecycle())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::loadMainScreen, throwable -> {
+                    mBinding.setError(true);
+                    throwable.printStackTrace();
+                });
+    }
+
+    Completable fetchImageIgnoreError(String url) {
+        return Completable.create(emitter -> {
+            Picasso.with(this).load(url).fetch(new Callback() {
+                @Override
+                public void onSuccess() {
+                    emitter.onComplete();
+                }
+
+                @Override
+                public void onError() {
+                    emitter.onComplete();
+                }
+            });
+        });
     }
 }

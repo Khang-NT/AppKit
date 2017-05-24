@@ -57,18 +57,16 @@ public class MainScreen extends BaseActivity {
         if (mainScreenConfig == null)
             mainScreenConfig = mConfigurationStore.getMainScreenConfig().blockingFirst();
         Preconditions.checkNotNull(mainScreenConfig);
-//
-//
+
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main_screen);
         mBinding.setConfig(mainScreenConfig);
-//
+
         setStatusBarConfig(mainScreenConfig.getStatusBarConfig());
-//
+
         setSupportActionBar(mBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator();
         setTitle("");
-//
+
         mConfigurationStore
                 .getMainScreenConfig()
                 .skip(1)
@@ -78,60 +76,21 @@ public class MainScreen extends BaseActivity {
                     getIntent().putExtra(EXTRA_CONFIG_DATA, config);
                     recreate();
                 }, Throwable::printStackTrace);
-//
-//        if (UserKitIdentity.getInstance().getAccountManager().isLoggedIn()) {
-//            // already logged in but did't select any profile
-//            if (mPreferenceStore.getSelectedProfileId() == null) {
-//                Intent intent = new Intent(this, SelectProfileActivity.class);
-//                startActivity(intent);
-//                finish();
-//                return;
-//            }
-//        }
-//
-//        NavHeaderBinding navHeaderBinding = NavHeaderBinding.inflate(LayoutInflater.from(this),
-//                null, false);
-//
-//        navHeaderBinding.setOnLoginClick(v -> {
-//            Intent intent = new Intent(this, AuthenticateActivity.class);
-//            startActivity(intent);
-//        });
-//
-//        navHeaderBinding.setOnViewProfileClick(v -> {
-//            Intent intent = new Intent(this, SelectProfileActivity.class);
-//            intent.putExtra(SelectProfileActivity.KEY_IS_SWITCH_PROIFLE, true);
-//            startActivity(intent);
-//        });
-//
-//        accountProfileViewModel = new AccountProfileViewModel(this);
-//        navHeaderBinding.setViewModel(accountProfileViewModel);
-//        mBinding.navView.addHeaderView(navHeaderBinding.getRoot());
-//
+
         mDrawerToggle = new ActionBarDrawerToggle(this,
                 mBinding.drawerLayout, mBinding.toolbar, 0, 0);
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mBinding.drawerLayout.addDrawerListener(mDrawerToggle);
-//
+
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mBinding.libraryPager.setAdapter(mPagerAdapter);
         mBinding.libraryPager.addOnPageChangeListener(mPagerAdapter);
-//
-//        handleIntent(getIntent());
-//
+
         loadPages();
-//
-//        if (getIntent().getStringExtra(KEY_MESSAGE_ID) != null) {
-//            String messageId = getIntent().getStringExtra(KEY_MESSAGE_ID);
-//            UserKit.getInstance().pushNotificationOpened(messageId);
-//        }
+
+        // todo: init navigation view
     }
-//
-//    @Override
-//    protected void onNewIntent(Intent intent) {
-//        super.onNewIntent(intent);
-//        handleIntent(intent);
-//    }
-//
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -190,21 +149,6 @@ public class MainScreen extends BaseActivity {
             args.putParcelable(PageFragment.KEY_PAGE_CONFIG, pageConfig);
             pageFragment.setArguments(args);
             return pageFragment;
-//            Bundle args = new Bundle();
-//            args.putString(MoviesFragment.KEY_PATH, "sections/" + position);
-//            args.putString(MoviesFragment.KEY_CATEGORY, sectionMetadata.getTitle());
-//
-//            if (sectionMetadata.getType().equals(C.TYPE_MOVIES)) {
-//                MoviesFragment moviesFragment = new MoviesFragment();
-//                moviesFragment.setArguments(args);
-//                return moviesFragment;
-//            } else if (sectionMetadata.getType().equals(C.TYPE_NEWS)) {
-//                NewsFragment newsFragment = new NewsFragment();
-//                newsFragment.setArguments(args);
-//                return newsFragment;
-//            }
-
-//            return new PageFragment();
         }
 
 
@@ -216,15 +160,7 @@ public class MainScreen extends BaseActivity {
 
         @Override
         public int getItemPosition(Object object) {
-//            if (object instanceof HasMetadata) {
-//                HasMetadata metadata = (HasMetadata) object;
-//                for (int i = 0; i < getCount(); i++) {
-//                    if (sectionMetadataList.get(i).getTitle().equals(metadata.getCategory())
-//                            && sectionMetadataList.get(i).getType().equals(metadata.getType())
-//                            && ("sections/" + i).equals(metadata.getPath()))
-//                        return i;
-//                }
-//            }
+            // todo: handle reload
             return POSITION_NONE;
         }
 
@@ -240,10 +176,6 @@ public class MainScreen extends BaseActivity {
 
         @Override
         public void onPageSelected(int position) {
-//            for (int i = 0; i < getCount(); i++) {
-//                MenuItem item = mBinding.navView.getMenu().findItem(i);
-//                if (item != null) item.setChecked(i == position);
-//            }
             mBinding.topBarTitle.setText(getPageTitle(position));
         }
 
