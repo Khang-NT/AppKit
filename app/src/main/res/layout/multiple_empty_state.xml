@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="state"
+            type="Integer"/>
+
+        <variable
+            name="loadingMessage"
+            type="String"/>
+        <variable
+            name="errorMessage"
+            type="String"/>
+        <variable
+            name="emptyMessage"
+            type="String"/>
+        <variable
+            name="onRetryClick"
+            type="android.view.View.OnClickListener"/>
+        <variable
+            name="errorReason"
+            type="String"/>
+
+        <import type="android.view.View"/>
+        <import type="com.mstage.appkit.adapter.MultipleEmptyState"/>
+    </data>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ProgressBar
+            android:id="@+id/progress_wheel"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:visibility="@{MultipleEmptyState.STATE_LOADING == state ? View.VISIBLE : View.GONE}"/>
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_launcher_round"
+            android:visibility="@{MultipleEmptyState.STATE_LOADING == state ? View.GONE : View.VISIBLE}"/>
+
+        <TextView
+            android:id="@+id/tv_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="@{state == MultipleEmptyState.STATE_LOADING ? loadingMessage : (state == MultipleEmptyState.STATE_FAILED ? errorMessage : emptyMessage)}"
+            tools:text="Loading somethings..."/>
+
+        <TextView
+            android:id="@+id/tv_error_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="@{errorReason}"
+            android:visibility="@{state == MultipleEmptyState.STATE_FAILED &amp;&amp; errorReason != null ? View.VISIBLE : View.GONE}"
+            tools:text="Loading somethings..."/>
+
+        <Button
+            android:id="@+id/b_retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="@{onRetryClick}"
+            android:text="Retry"
+            android:visibility="@{onRetryClick != null &amp;&amp; state == MultipleEmptyState.STATE_FAILED ? View.VISIBLE : View.GONE}"/>
+    </LinearLayout>
+</layout>

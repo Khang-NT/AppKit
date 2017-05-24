@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="movieData"
+            type="com.mstage.appkit.model.MovieData"/>
+
+        <variable
+            name="itemConfig"
+            type="com.mstage.appkit.section.Section0ItemConfig"/>
+    </data>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:bindBackground="@{itemConfig.background}"
+        app:bindMarginBottom="@{itemConfig.space}">
+
+        <com.mstage.appkit.view.AspectRatioImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="#323232"
+            app:bindImage="@{movieData.landscapeImage}"
+            app:bindPlaceHolder="@{itemConfig.placeHolder}"
+            app:ratio="2"/>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:minLines="1"
+            android:padding="16dp"
+            android:text="@{movieData.title}"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:bindFont="@{itemConfig.font}"
+            tools:text="Iron First"/>
+
+    </RelativeLayout>
+</layout>

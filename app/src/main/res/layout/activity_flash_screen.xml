@@ -29,13 +29,6 @@
         android:layout_height="match_parent"
         app:bindBackground="@{flashScreenConfig.background}">
 
-        <!--<View-->
-            <!--android:id="@+id/fake_status_bar"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="25dp"-->
-            <!--android:fitsSystemWindows="false"-->
-            <!--app:bindStatusBar="@{flashScreenConfig.statusBarConfig}"/>-->
-
         <ImageView
             android:id="@+id/ivLogo"
             android:layout_width="150dp"

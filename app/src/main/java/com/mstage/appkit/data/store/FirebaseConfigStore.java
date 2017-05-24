@@ -6,7 +6,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.mstage.appkit.model.FlashScreenConfig;
 import com.mstage.appkit.model.MainScreenConfig;
+import com.mstage.appkit.model.PageConfig;
 import com.mstage.appkit.util.DataSnapshotWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
@@ -56,6 +60,30 @@ public class FirebaseConfigStore implements ConfigurationStore, ValueEventListen
     }
 
     @Override
+    public Observable<List<PageConfig>> getPagesConfig() {
+        return Observable.create(emitter -> {
+            ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    List<PageConfig> pagesConfig = new ArrayList<>();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        pagesConfig.add(PageConfig.from(new DataSnapshotWrapper(snapshot)));
+                    }
+                    emitter.onNext(pagesConfig);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    emitter.onError(databaseError.toException());
+                }
+            };
+            DatabaseReference pages = rootReference.child("Pages");
+            pages.addValueEventListener(valueEventListener);
+            emitter.setCancellable(() -> pages.removeEventListener(valueEventListener));
+        });
+    }
+
+    @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         DataSnapshotWrapper dataSnapshotWrapper = new DataSnapshotWrapper(dataSnapshot);
 
@@ -75,4 +103,6 @@ public class FirebaseConfigStore implements ConfigurationStore, ValueEventListen
             Timber.e(databaseError.toException(), "Firebase listener connection is broken.");
         }
     }
+
+
 }
