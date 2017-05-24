@@ -16,7 +16,7 @@ import timber.log.Timber;
 
 public class TopBarConfig implements Parcelable {
     private Background background;
-    private Font font;
+    private FontConfig font;
     private String contentAlign;
     private String defaultTitle;
     private String defaultLogo;
@@ -24,7 +24,7 @@ public class TopBarConfig implements Parcelable {
 
     protected TopBarConfig(Parcel in) {
         background = in.readParcelable(Background.class.getClassLoader());
-        font = in.readParcelable(Font.class.getClassLoader());
+        font = in.readParcelable(FontConfig.class.getClassLoader());
         contentAlign = in.readString();
         defaultTitle = in.readString();
         defaultLogo = in.readString();
@@ -46,14 +46,14 @@ public class TopBarConfig implements Parcelable {
     public static TopBarConfig from(DataSnapshotWrapper dataSnapshot) {
         if (!dataSnapshot.hasChildren()) return null;
         return new TopBarConfig(Background.from(dataSnapshot.child("background")),
-                Font.from(dataSnapshot.child("font")),
+                FontConfig.from(dataSnapshot.child("font")),
                 dataSnapshot.get("content_align", String.class),
                 dataSnapshot.get("default_title", String.class),
                 dataSnapshot.get("default_logo", String.class),
                 dataSnapshot.get("icon_color", String.class));
     }
 
-    public TopBarConfig(Background background, Font font, String contentAlign, String defaultTitle,
+    public TopBarConfig(Background background, FontConfig font, String contentAlign, String defaultTitle,
                         String defaultLogo, String iconColor) {
         this.background = background;
         this.font = font;
@@ -67,7 +67,7 @@ public class TopBarConfig implements Parcelable {
         return background;
     }
 
-    public Font getFont() {
+    public FontConfig getFont() {
         return font;
     }
 

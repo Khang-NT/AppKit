@@ -33,7 +33,7 @@ import timber.log.Timber;
  * Email: khang.neon.1997@gmail.com
  */
 
-public class Font implements Parcelable {
+public class FontConfig implements Parcelable {
     private String fontFamily;
     private String fontUrl;
     private String fontSize;
@@ -42,28 +42,28 @@ public class Font implements Parcelable {
     @Inject
     OkHttpClient mOkHttpClient;
 
-    protected Font(Parcel in) {
+    protected FontConfig(Parcel in) {
         fontFamily = in.readString();
         fontUrl = in.readString();
         fontSize = in.readString();
         fontColor = in.readString();
     }
 
-    public static final Creator<Font> CREATOR = new Creator<Font>() {
+    public static final Creator<FontConfig> CREATOR = new Creator<FontConfig>() {
         @Override
-        public Font createFromParcel(Parcel in) {
-            return new Font(in);
+        public FontConfig createFromParcel(Parcel in) {
+            return new FontConfig(in);
         }
 
         @Override
-        public Font[] newArray(int size) {
-            return new Font[size];
+        public FontConfig[] newArray(int size) {
+            return new FontConfig[size];
         }
     };
 
-    public static Font from(DataSnapshotWrapper dataSnapshot) {
+    public static FontConfig from(DataSnapshotWrapper dataSnapshot) {
         if (dataSnapshot.hasChildren()) {
-            return new Font(dataSnapshot.get("font_family", String.class),
+            return new FontConfig(dataSnapshot.get("font_family", String.class),
                     dataSnapshot.get("font_url", String.class),
                     dataSnapshot.get("font_size", String.class),
                     dataSnapshot.get("font_color", String.class));
@@ -71,7 +71,7 @@ public class Font implements Parcelable {
         return null;
     }
 
-    public Font(String fontFamily, String fontUrl, String fontSize, String fontColor) {
+    public FontConfig(String fontFamily, String fontUrl, String fontSize, String fontColor) {
         this.fontFamily = fontFamily;
         this.fontUrl = fontUrl;
         this.fontSize = fontSize;
@@ -157,7 +157,7 @@ public class Font implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Font font = (Font) o;
+        FontConfig font = (FontConfig) o;
 
         if (fontFamily != null ? !fontFamily.equals(font.fontFamily) : font.fontFamily != null)
             return false;

@@ -2,7 +2,7 @@ package com.mstage.appkit.data.inject;
 
 import com.mstage.appkit.activity.FlashScreen;
 import com.mstage.appkit.activity.MainScreen;
-import com.mstage.appkit.model.Font;
+import com.mstage.appkit.model.FontConfig;
 import com.mstage.appkit.model.HttpDataSourceConfig;
 
 /**
@@ -15,7 +15,7 @@ public interface AppKitInjector {
 
     void inject(MainScreen mainScreen);
 
-    void inject(Font font);
+    void inject(FontConfig font);
 
     void inject(HttpDataSourceConfig httpDataSourceConfig);
 }

@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mstage.appkit.model.Background;
-import com.mstage.appkit.model.Font;
+import com.mstage.appkit.model.FontConfig;
 import com.mstage.appkit.model.StatusBarConfig;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -35,7 +35,7 @@ public class BindingAdapters {
     }
 
     @BindingAdapter("bindFont")
-    public static void bindFont(TextView textView, Font font) {
+    public static void bindFont(TextView textView, FontConfig font) {
         if (font != null) {
             if (!TextUtils.isEmpty(font.getFontFamily())) {
                 textView.setTypeface(font.getTypeface(textView.getContext()));

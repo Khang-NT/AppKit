@@ -92,7 +92,6 @@ public class MainScreen extends BaseActivity {
 
         loadPages();
 
-
     }
 
     void loadPages() {

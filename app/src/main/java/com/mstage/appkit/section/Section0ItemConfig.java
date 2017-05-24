@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.mstage.appkit.model.Background;
-import com.mstage.appkit.model.Font;
+import com.mstage.appkit.model.FontConfig;
 import com.mstage.appkit.util.DataSnapshotWrapper;
 
 /**
@@ -14,18 +14,18 @@ import com.mstage.appkit.util.DataSnapshotWrapper;
 
 public class Section0ItemConfig implements Parcelable {
     private Background background;
-    private Font font;
+    private FontConfig font;
     private String space;
     private String placeHolder;
 
     public static Section0ItemConfig from(DataSnapshotWrapper dataSnapshot) {
         return new Section0ItemConfig(Background.from(dataSnapshot.child("background")),
-                Font.from(dataSnapshot.child("font")),
+                FontConfig.from(dataSnapshot.child("font")),
                 dataSnapshot.get("space", String.class),
                 dataSnapshot.get("thumbnail_place_holder", String.class));
     }
 
-    public Section0ItemConfig(Background background, Font font, String space, String placeHolder) {
+    public Section0ItemConfig(Background background, FontConfig font, String space, String placeHolder) {
         this.background = background;
         this.font = font;
         this.space = space;
@@ -36,7 +36,7 @@ public class Section0ItemConfig implements Parcelable {
         return background;
     }
 
-    public Font getFont() {
+    public FontConfig getFont() {
         return font;
     }
 
@@ -50,7 +50,7 @@ public class Section0ItemConfig implements Parcelable {
 
     protected Section0ItemConfig(Parcel in) {
         background = in.readParcelable(Background.class.getClassLoader());
-        font = in.readParcelable(Font.class.getClassLoader());
+        font = in.readParcelable(FontConfig.class.getClassLoader());
         space = in.readString();
         placeHolder = in.readString();
     }
